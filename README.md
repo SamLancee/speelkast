@@ -3,10 +3,28 @@ Plan van aanpak:
 Eerst in folder lijst met spellen
 Starten met frontend: inlog en weergave van spellen
 
-Classes:
-Abstract class wat key items bevat(speelduur, tijd, spelers, moeilijkheidsgraad)
-
-Elk spel gebruikt abstract class
-uitbreidingen extenden die classes weer
+Opzet voor casus
+interfaces:
+    FotoInterface
+    Opslaginterface
+classes:
+    KastItem abstracte class
+    Bordspel subclass
+    Uitbreiding subclass
+    BestandOpslag (gebruikt opslaginterface)
+    ItemRepository (database query via DI)
+    UserRepository (Login via DI)
+views:
+    login_view
+    kast_view
+    toevoegen_view
+upload:
+    login
+    logout
+    index
+    toevoegen
+    export
+    speelkast
+    avondlijst
 
 
