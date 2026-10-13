@@ -1,4 +1,7 @@
 # speelkast
+Inloggen met username:Test password:123
+De spellen staan onder de folder spellen. 
+
 Plan van aanpak:
 Eerst in folder lijst met spellen
 Starten met frontend: inlog en weergave van spellen

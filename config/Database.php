@@ -4,7 +4,7 @@
 class Database {
     public static function getConnection(): PDO {
         $host = 'localhost';
-        $dbname = 'speelkast'; // naam van je database in phpMyAdmin
+        $dbname = 'speelkast'; // naam van database
         $user = 'root';
         $pass = '';
 
