@@ -25,4 +25,7 @@ class Uitbreiding extends KastItem {
     public function omschrijving(): string {
         return !empty($this->basisspel) ? "Uitbreiding op: {$this->basisspel}" : "Uitbreiding";
     }
+    public function getBasisspel(): string{
+        return "basisspel";
+    }
 }

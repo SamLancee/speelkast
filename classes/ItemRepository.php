@@ -43,4 +43,46 @@ class ItemRepository {
 
         return $items;
     }
+   
+   //opslaan
+    public function save(KastItem $item): bool {
+        $isUitbreiding = ($item instanceof Uitbreiding);
+        
+        $sql = "INSERT INTO items (
+                    type, titel, eigenaar, foto, 
+                    min_spelers, max_spelers, speelduur, moeilijkheidsgraad, basisspel
+                ) VALUES (
+                    :type, :titel, :eigenaar, :foto, 
+                    :min_spelers, :max_spelers, :speelduur, :moeilijkheidsgraad, :basisspel
+                )";
+
+        $stmt = $this->db->prepare($sql);
+
+        if ($isUitbreiding) {
+            return $stmt->execute([
+                'type'               => 'uitbreiding',
+                'titel'              => $item->getTitel(),
+                'eigenaar'           => $item->getEigenaar(),
+                'foto'               => $item->getFotoPad(),
+                'min_spelers'        => null,
+                'max_spelers'        => null,
+                'speelduur'          => null,
+                'moeilijkheidsgraad' => null,
+                'basisspel'          => method_exists($item, 'getBasisspel') ? $item->getBasisspel() : null
+            ]);
+        } else {
+            // Het is een Bordspel
+            return $stmt->execute([
+                'type'               => 'bordspel',
+                'titel'              => $item->getTitel(),
+                'eigenaar'           => $item->getEigenaar(),
+                'foto'               => $item->getFotoPad(),
+                'min_spelers'        => method_exists($item, 'getMinSpelers') ? $item->getMinSpelers() : null,
+                'max_spelers'        => method_exists($item, 'getMaxSpelers') ? $item->getMaxSpelers() : null,
+                'speelduur'          => method_exists($item, 'getSpeelduur') ? $item->getSpeelduur() : null,
+                'moeilijkheidsgraad' => method_exists($item, 'getMoeilijkheidsgraad') ? $item->getMoeilijkheidsgraad() : null,
+                'basisspel'          => null
+            ]);
+        }
+    }
 }

@@ -24,4 +24,20 @@ class UserRepository {
 
         return null;
     }
+    public function usernameExists(string $username): bool {
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE username = :username LIMIT 1");
+        $stmt->execute(['username' => $username]);
+        return (bool)$stmt->fetch();
+    }
+
+    public function register(string $username, string $plainPassword): bool {
+        // Wachtwoord hashen met bcrypt
+        $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
+
+        $stmt = $this->db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+        return $stmt->execute([
+            'username' => $username,
+            'password' => $hashedPassword
+        ]);
+    }
 }

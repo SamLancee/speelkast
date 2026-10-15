@@ -32,6 +32,7 @@
         </div>
 
         <button type="submit">Inloggen</button>
+        <p>Nog geen account? <a href="register.php">Registreer hier</a>.</p>
     </form>
 </body>
 </html>

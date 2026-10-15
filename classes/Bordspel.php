@@ -30,6 +30,18 @@ class Bordspel extends KastItem {
     public function getType(): string {
         return 'Bordspel';
     }
+    public function getMinSpelers(): int{
+        return "minSpelers";
+    }
+    public function getMaxSpelers(): int{
+        return "maxSpelers";
+    }
+    public function getSpeelduur(): int{
+        return "speelduur";
+    }
+    public function getMoeilijkheidsgraad(): string{
+        return "moeilijkheidsgraad";
+    }
 
     public function omschrijving(): string {
         $details = [];
