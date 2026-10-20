@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="speelkast">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="titel" type="xs:string" />
+                            <xs:element name="basisspel" type="xs:string" minOccurs="0" />
+                            <xs:element name="foto" type="xs:string" />
+                            <xs:element name="eigenaar" type="xs:string" />
+                        </xs:sequence>
+                        
+                        <!-- Attributen -->
+                        <xs:attribute name="type" use="required">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="bordspel" />
+                                    <xs:enumeration value="uitbreiding" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="speelduur" type="xs:string" use="optional" />
+                        <xs:attribute name="spelers" type="xs:string" use="optional" />
+                        <xs:attribute name="moeilijkheidsgraad" type="xs:string" use="optional" />
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
