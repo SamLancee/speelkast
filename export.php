@@ -7,18 +7,26 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-$xmlFile = 'avondlijst.xml';
-$xsdFile = 'avondlijst.xsd';
-$xsltFile = 'avondlijst.xslt';
+require_once 'config/Database.php';
+require_once 'classes/ItemRepository.php';
 
-// 1. XML inladen
+$db = Database::getConnection();
+$itemRepo = new ItemRepository($db);
+
+// 1. Live XML genereren uit de MySQL-database
+$xmlString = $itemRepo->exportToXml();
+
+// Schrijf weg naar bestand zodat je fysieke bestand altijd up-to-date is
+file_put_contents('avondlijst.xml', $xmlString);
+
+// 2. DOMDocument laden vanuit de gegenereerde XML-string
 $xml = new DOMDocument();
-if (!$xml->load($xmlFile)) {
-    die("Fout bij het laden van {$xmlFile}.");
-}
+$xml->loadXML($xmlString);
 
-// 2. Valideren tegen XSD
+// 3. Valideren tegen het XSD-schema
+$xsdFile = 'avondlijst.xsd';
 libxml_use_internal_errors(true);
+
 if (!$xml->schemaValidate($xsdFile)) {
     echo "<h2>XSD Validatiefouten:</h2><ul>";
     foreach (libxml_get_errors() as $error) {
@@ -29,14 +37,14 @@ if (!$xml->schemaValidate($xsdFile)) {
     exit;
 }
 
-// 3. XSLT inladen
+// 4. XSLT inladen en transformeren
 $xsl = new DOMDocument();
-if (!$xsl->load($xsltFile)) {
-    die("Fout bij het laden van {$xsltFile}.");
+if (!$xsl->load('avondlijst.xslt')) {
+    die("Fout bij het inladen van avondlijst.xslt.");
 }
 
-// 4. Transformeren en printen
 $proc = new XSLTProcessor();
 $proc->importStyleSheet($xsl);
 
+// 5. HTML tonen in de browser
 echo $proc->transformToXML($xml);

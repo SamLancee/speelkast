@@ -7,47 +7,127 @@
         <head>
             <meta charset="UTF-8" />
             <title>Avondlijst Spellenavond</title>
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 15px;
+                }
+                th, td {
+                    border: 1px solid #ccc;
+                    padding: 8px 12px;
+                    text-align: left;
+                    vertical-align: middle;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+                tr:nth-child(even) {
+                    background-color: #fafafa;
+                }
+                .thumb {
+                    max-width: 70px;
+                    height: auto;
+                    display: block;
+                }
+                .badge {
+                    text-transform: capitalize;
+                    font-weight: bold;
+                }
+            </style>
         </head>
         <body>
             <p><a href="index.php">&#8592; Terug naar de kast</a></p>
             <h1>Avondlijst - Spellenavond</h1>
             <p>Overzicht gegenereerd via XML en XSLT.</p>
-            <hr />
 
-            <xsl:for-each select="item">
-                <div>
-                    <img>
-                        <xsl:attribute name="src">
-                            <xsl:value-of select="foto" />
-                        </xsl:attribute>
-                        <xsl:attribute name="alt">
-                            <xsl:value-of select="titel" />
-                        </xsl:attribute>
-                        <xsl:attribute name="style">max-width: 120px; height: auto;</xsl:attribute>
-                    </img>
-                    <br />
-                    <strong>Titel: </strong> <xsl:value-of select="titel" /><br />
-                    <strong>Type: </strong> <xsl:value-of select="@type" /><br />
-                    <strong>Eigenaar: </strong> <xsl:value-of select="eigenaar" /><br />
+            <table>
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Titel</th>
+                        <th>Type</th>
+                        <th>Spelers</th>
+                        <th>Speelduur</th>
+                        <th>Moeilijkheidsgraad</th>
+                        <th>Basisspel</th>
+                        <th>Eigenaar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <xsl:for-each select="item">
+                        <tr>
+                            <!-- 1. Foto -->
+                            <td>
+                                <img>
+                                    <xsl:attribute name="src">
+                                        <xsl:value-of select="foto" />
+                                    </xsl:attribute>
+                                    <xsl:attribute name="alt">
+                                        <xsl:value-of select="titel" />
+                                    </xsl:attribute>
+                                    <xsl:attribute name="class">thumb</xsl:attribute>
+                                </img>
+                            </td>
 
-                    <!-- Alleen tonen als speelduur en spelers bestaan -->
-                    <xsl:if test="@speelduur">
-                        <strong>Speelduur: </strong> <xsl:value-of select="@speelduur" /> min<br />
-                    </xsl:if>
-                    <xsl:if test="@spelers">
-                        <strong>Spelers: </strong> <xsl:value-of select="@spelers" /><br />
-                    </xsl:if>
-                    <xsl:if test="@moeilijkheidsgraad">
-                        <strong>Niveau: </strong> <xsl:value-of select="@moeilijkheidsgraad" /><br />
-                    </xsl:if>
+                            <!-- 2. Titel -->
+                            <td>
+                                <strong><xsl:value-of select="titel" /></strong>
+                            </td>
 
-                    <!-- Basisspel alleen tonen bij een uitbreiding -->
-                    <xsl:if test="basisspel">
-                        <strong>Hoort bij: </strong> <xsl:value-of select="basisspel" /><br />
-                    </xsl:if>
-                </div>
-                <hr />
-            </xsl:for-each>
+                            <!-- 3. Type (attribuut) -->
+                            <td>
+                                <span class="badge"><xsl:value-of select="@type" /></span>
+                            </td>
+
+                            <!-- 4. Spelers (attribuut) -->
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="@spelers">
+                                        <xsl:value-of select="@spelers" />
+                                    </xsl:when>
+                                    <xsl:otherwise>-</xsl:otherwise>
+                                </xsl:choose>
+                            </td>
+
+                            <!-- 5. Speelduur (attribuut) -->
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="@speelduur">
+                                        <xsl:value-of select="@speelduur" /> min
+                                    </xsl:when>
+                                    <xsl:otherwise>-</xsl:otherwise>
+                                </xsl:choose>
+                            </td>
+
+                            <!-- 6. Moeilijkheidsgraad (attribuut) -->
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="@moeilijkheidsgraad">
+                                        <xsl:value-of select="@moeilijkheidsgraad" />
+                                    </xsl:when>
+                                    <xsl:otherwise>-</xsl:otherwise>
+                                </xsl:choose>
+                            </td>
+
+                            <!-- 7. Basisspel (element) -->
+                            <td>
+                                <xsl:choose>
+                                    <xsl:when test="basisspel">
+                                        <xsl:value-of select="basisspel" />
+                                    </xsl:when>
+                                    <xsl:otherwise>-</xsl:otherwise>
+                                </xsl:choose>
+                            </td>
+
+                            <!-- 8. Eigenaar (element) -->
+                            <td>
+                                <xsl:value-of select="eigenaar" />
+                            </td>
+                        </tr>
+                    </xsl:for-each>
+                </tbody>
+            </table>
         </body>
         </html>
     </xsl:template>

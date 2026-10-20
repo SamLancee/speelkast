@@ -85,4 +85,53 @@ class ItemRepository {
             ]);
         }
     }
+    public function exportToXml(): string {
+        $stmt = $this->db->query("SELECT * FROM items ORDER BY id ASC");
+        $items = $stmt->fetchAll();
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = true;
+
+        $root = $dom->createElement('speelkast');
+        $dom->appendChild($root);
+
+        foreach ($items as $item) {
+            $itemElem = $dom->createElement('item');
+            $itemElem->setAttribute('type', $item['type']);
+
+            // Type-specifieke attributen toevoegen (alleen als ze niet NULL of leeg zijn)
+            if (!empty($item['speelduur'])) {
+                $itemElem->setAttribute('speelduur', (string)$item['speelduur']);
+            }
+            if (!empty($item['min_spelers']) && !empty($item['max_spelers'])) {
+                $itemElem->setAttribute('spelers', $item['min_spelers'] . '-' . $item['max_spelers']);
+            }
+            if (!empty($item['moeilijkheidsgraad'])) {
+                $itemElem->setAttribute('moeilijkheidsgraad', $item['moeilijkheidsgraad']);
+            }
+
+            // Kind-elementen
+            $titelElem = $dom->createElement('titel');
+            $titelElem->textContent = $item['titel'];
+            $itemElem->appendChild($titelElem);
+
+            if ($item['type'] === 'uitbreiding' && !empty($item['basisspel'])) {
+                $basisElem = $dom->createElement('basisspel');
+                $basisElem->textContent = $item['basisspel'];
+                $itemElem->appendChild($basisElem);
+            }
+
+            $fotoElem = $dom->createElement('foto');
+            $fotoElem->textContent = $item['foto'];
+            $itemElem->appendChild($fotoElem);
+
+            $eigenaarElem = $dom->createElement('eigenaar');
+            $eigenaarElem->textContent = $item['eigenaar'];
+            $itemElem->appendChild($eigenaarElem);
+
+            $root->appendChild($itemElem);
+        }
+
+        return $dom->saveXML();
+    }
 }

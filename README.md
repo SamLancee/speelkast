@@ -1,6 +1,6 @@
 # speelkast
 Inloggen met username:Test password:123
-De spellen staan onder de folder spellen. 
+De spellen staan onder de folder spellen. Alle nieuwe toegevoegde spellen komen bij upload te staan. 
 
 Plan van aanpak:
 Eerst in folder lijst met spellen
@@ -21,13 +21,13 @@ views:
     login_view
     kast_view
     toevoegen_view
-upload:
-    login
-    logout
-    index
-    toevoegen
-    export
-    speelkast
-    avondlijst
+
+login
+logout
+index
+toevoegen
+export
+speelkast
+avondlijst
 
 

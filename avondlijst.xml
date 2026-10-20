@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<speelkast>
+  <item type="bordspel" speelduur="30" spelers="2-4" moeilijkheidsgraad="Gemiddeld">
+    <titel>Dominion</titel>
+    <foto>spellen/dominion.jpg</foto>
+    <eigenaar>Sam</eigenaar>
+  </item>
+  <item type="uitbreiding" speelduur="30" spelers="2-4" moeilijkheidsgraad="Gemiddeld">
+    <titel>Dominion - uitbreiding</titel>
+    <basisspel>Dominion&#13;
+</basisspel>
+    <foto>spellen/dominion_uitbreiding.png</foto>
+    <eigenaar>Sam</eigenaar>
+  </item>
+  <item type="bordspel" speelduur="120" spelers="1-4" moeilijkheidsgraad="Moeilijk">
+    <titel>Dune: Imperium</titel>
+    <foto>spellen/dune.jpg</foto>
+    <eigenaar>Sam</eigenaar>
+  </item>
+  <item type="bordspel" speelduur="60" spelers="2-4" moeilijkheidsgraad="Gemiddeld">
+    <titel>Rovers van de Noordzee</titel>
+    <foto>spellen/rovers.jpg</foto>
+    <eigenaar>Sam</eigenaar>
+  </item>
+  <item type="bordspel" speelduur="60" spelers="2-4" moeilijkheidsgraad="Gemiddeld">
+    <titel>De Taveernen van de Oude Stad</titel>
+    <foto>spellen/taveerne.jpg</foto>
+    <eigenaar>Sam</eigenaar>
+  </item>
+  <item type="bordspel" speelduur="15" spelers="3-5" moeilijkheidsgraad="Eenvoudig">
+    <titel>Bokkenschieten</titel>
+    <foto>upload/foto_6ad2174169d094.89774451.jpg</foto>
+    <eigenaar>Sam</eigenaar>
+  </item>
+  <item type="bordspel" speelduur="45" spelers="2-5" moeilijkheidsgraad="Gemiddeld">
+    <titel>Dwergen van Nidavillir</titel>
+    <foto>upload/foto_6ad217a7907248.44324157.jpeg</foto>
+    <eigenaar>Tom</eigenaar>
+  </item>
+  <item type="bordspel" speelduur="30" spelers="2-6" moeilijkheidsgraad="Eenvoudig">
+    <titel>Perudo</titel>
+    <foto>upload/foto_6ad75097065378.88272133.jpeg</foto>
+    <eigenaar>Melissa</eigenaar>
+  </item>
+</speelkast>
