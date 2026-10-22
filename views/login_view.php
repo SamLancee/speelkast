@@ -3,36 +3,43 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inloggen - De Speelkast</title>
-    <style>
-        body { font-family: sans-serif; margin: 40px; }
-        .error { color: #b00020; background: #fde8e8; border: 1px solid #f8b4b4; padding: 10px; width: 300px; margin-bottom: 15px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="password"] { width: 300px; padding: 8px; }
-        button { padding: 8px 16px; cursor: pointer; }
-    </style>
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
-    <h2>Inloggen bij De Speelkast</h2>
 
-    <?php if (!empty($errorMessage)): ?>
-        <div class="error"><?= htmlspecialchars($errorMessage) ?></div>
-    <?php endif; ?>
+    <div class="auth-card">
+        <h2>Inloggen</h2>
 
-    <form method="POST" action="login.php">
-        <div class="form-group">
-            <label for="username">Gebruikersnaam:</label>
-            <input type="text" id="username" name="username" value="<?= htmlspecialchars($usernameInput ?? '') ?>" required>
+        <?php if (isset($_GET['registered'])): ?>
+            <div class="alert alert-success">Account aangemaakt! Je kunt nu inloggen.</div>
+        <?php endif; ?>
+
+        <?php if (!empty($errorMessage)): ?>
+            <div class="alert alert-error"><?= htmlspecialchars($errorMessage) ?></div>
+        <?php endif; ?>
+
+        <form method="POST" action="login.php">
+            <div class="form-group">
+                <label for="username">Gebruikersnaam:</label>
+                <input type="text" id="username" name="username" value="<?= htmlspecialchars($usernameInput ?? '') ?>" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Wachtwoord:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Inloggen</button>
+        </form>
+
+        <div class="auth-divider">
+            <span>of</span>
         </div>
 
-        <div class="form-group">
-            <label for="password">Wachtwoord:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
+        <a href="register.php" class="btn btn-secondary">Account aanmaken</a>
+    </div>
 
-        <button type="submit">Inloggen</button>
-        <p>Nog geen account? <a href="register.php">Registreer hier</a>.</p>
-    </form>
 </body>
 </html>
