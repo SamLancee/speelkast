@@ -30,4 +30,6 @@ export
 speelkast
 avondlijst
 
+Uitleg JS & server validatie: wanneer er alleen gebruik gemaakt wordt van JS validatie betekent het dat bij de client side alles gecheckt wordt maar bij de server side niks gebeurd. Dit is niet voldoende om je via de client side veel dingen zelf kan uitzetten via de browser of kan veranderen. De client side checks zijn voor het gemak van de gebruiker en niet zo zeer voor de echte beveiliging van de code. Hiervoor is het echt nodig om server validatie toe te voegen. 
+
 

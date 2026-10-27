@@ -59,4 +59,23 @@ class Bordspel extends KastItem {
         }
         return empty($details) ? 'Standaard bordspel' : implode(' | ', $details);
     }
+
+    public function toXmlNode(DOMDocument $dom): DOMElement {
+        // Haal de basis-node op met titel, foto en eigenaar
+        $itemElem = parent::toXmlNode($dom);
+
+        // Voeg bordspel-specifieke attributen toe
+        if ($this->minSpelers !== null && $this->maxSpelers !== null) {
+            $itemElem->setAttribute('spelers', "{$this->minSpelers}-{$this->maxSpelers}");
+        }
+        if ($this->speelduur !== null) {
+            $itemElem->setAttribute('speelduur', (string)$this->speelduur);
+        }
+        if ($this->moeilijkheidsgraad !== null && $this->moeilijkheidsgraad !== '') {
+            $itemElem->setAttribute('moeilijkheidsgraad', $this->moeilijkheidsgraad);
+        }
+
+        return $itemElem;
+    }
+    
 }

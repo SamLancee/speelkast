@@ -3,81 +3,91 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Toevoegen - De Speelkast</title>
+    <link rel="stylesheet" href="css/form.css">
 </head>
 <body>
 
-    <p><a href="index.php">&larr; Terug naar de kast</a></p>
-    <h2>Nieuw item toevoegen</h2>
+    <div class="container">
+        <a href="index.php" class="back-link">&larr; Terug naar de kast</a>
 
-    <?php if (!empty($errors)): ?>
-        <div style="color: red;">
-            <ul>
-                <?php foreach ($errors as $error): ?>
-                    <li><?= htmlspecialchars($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
+        <div class="form-card">
+            <h2>Nieuw item toevoegen</h2>
+
+            <?php if (!empty($errors)): ?>
+                <div class="alert-error">
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= htmlspecialchars($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <div id="jsError" class="alert-error"></div>
+
+            <form id="itemForm" action="toevoegen.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="type">Type item:</label>
+                    <select name="type" id="type">
+                        <option value="bordspel" <?= $type === 'bordspel' ? 'selected' : '' ?>>Bordspel</option>
+                        <option value="uitbreiding" <?= $type === 'uitbreiding' ? 'selected' : '' ?>>Uitbreiding</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="titel">Titel:</label>
+                    <input type="text" name="titel" id="titel" value="<?= htmlspecialchars($titel) ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="foto">Doosfoto (JPG, PNG of GIF):</label>
+                    <input type="file" name="foto" id="foto" accept=".jpg,.jpeg,.png,.gif" required>
+                </div>
+
+                <!-- Velden specifiek voor Bordspel -->
+                <div id="bordspelVelden">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="min_spelers">Min. spelers:</label>
+                            <input type="number" name="min_spelers" id="min_spelers" min="1" value="<?= htmlspecialchars($minSpelers) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="max_spelers">Max. spelers:</label>
+                            <input type="number" name="max_spelers" id="max_spelers" min="1" value="<?= htmlspecialchars($maxSpelers) ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="speelduur">Speelduur (minuten):</label>
+                            <input type="number" name="speelduur" id="speelduur" min="1" value="<?= htmlspecialchars($speelduur) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="moeilijkheidsgraad">Moeilijkheidsgraad:</label>
+                            <select name="moeilijkheidsgraad" id="moeilijkheidsgraad">
+                                <option value="">-- Kies optie --</option>
+                                <option value="Eenvoudig" <?= $moeilijkheidsgraad === 'Eenvoudig' ? 'selected' : '' ?>>Eenvoudig</option>
+                                <option value="Gemiddeld" <?= $moeilijkheidsgraad === 'Gemiddeld' ? 'selected' : '' ?>>Gemiddeld</option>
+                                <option value="Moeilijk" <?= $moeilijkheidsgraad === 'Moeilijk' ? 'selected' : '' ?>>Moeilijk</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Veld specifiek voor Uitbreiding -->
+                <div id="uitbreidingVelden" style="display: none;">
+                    <div class="form-group">
+                        <label for="basisspel">Bij welk basisspel hoort deze uitbreiding?:</label>
+                        <input type="text" name="basisspel" id="basisspel" value="<?= htmlspecialchars($basisspel) ?>">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Item opslaan</button>
+            </form>
         </div>
-    <?php endif; ?>
-
-    <div id="jsError" style="color: red;"></div>
-
-    <form id="itemForm" action="toevoegen.php" method="POST" enctype="multipart/form-data">
-        <p>
-            <label for="type">Type item:</label><br>
-            <select name="type" id="type">
-                <option value="bordspel" <?= $type === 'bordspel' ? 'selected' : '' ?>>Bordspel</option>
-                <option value="uitbreiding" <?= $type === 'uitbreiding' ? 'selected' : '' ?>>Uitbreiding</option>
-            </select>
-        </p>
-
-        <p>
-            <label for="titel">Titel:</label><br>
-            <input type="text" name="titel" id="titel" value="<?= htmlspecialchars($titel) ?>" required>
-        </p>
-
-        <p>
-            <label for="foto">Doosfoto (JPG, PNG of GIF):</label><br>
-            <input type="file" name="foto" id="foto" accept=".jpg,.jpeg,.png,.gif" required>
-        </p>
-
-        <!-- Velden specifiek voor Bordspel -->
-        <div id="bordspelVelden">
-            <p>
-                <label for="min_spelers">Minimaal aantal spelers:</label><br>
-                <input type="number" name="min_spelers" id="min_spelers" min="1" value="<?= htmlspecialchars($minSpelers) ?>">
-            </p>
-            <p>
-                <label for="max_spelers">Maximaal aantal spelers:</label><br>
-                <input type="number" name="max_spelers" id="max_spelers" min="1" value="<?= htmlspecialchars($maxSpelers) ?>">
-            </p>
-            <p>
-                <label for="speelduur">Speelduur (in minuten):</label><br>
-                <input type="number" name="speelduur" id="speelduur" min="1" value="<?= htmlspecialchars($speelduur) ?>">
-            </p>
-            <p>
-                <label for="moeilijkheidsgraad">Moeilijkheidsgraad:</label><br>
-                <select name="moeilijkheidsgraad" id="moeilijkheidsgraad">
-                    <option value="">-- Kies optie --</option>
-                    <option value="Eenvoudig" <?= $moeilijkheidsgraad === 'Eenvoudig' ? 'selected' : '' ?>>Eenvoudig</option>
-                    <option value="Gemiddeld" <?= $moeilijkheidsgraad === 'Gemiddeld' ? 'selected' : '' ?>>Gemiddeld</option>
-                    <option value="Moeilijk" <?= $moeilijkheidsgraad === 'Moeilijk' ? 'selected' : '' ?>>Moeilijk</option>
-                </select>
-            </p>
-        </div>
-
-        <!-- Veld specifiek voor Uitbreiding -->
-        <div id="uitbreidingVelden" style="display: none;">
-            <p>
-                <label for="basisspel">Bij welk basisspel hoort deze uitbreiding?:</label><br>
-                <input type="text" name="basisspel" id="basisspel" value="<?= htmlspecialchars($basisspel) ?>">
-            </p>
-        </div>
-
-        <p>
-            <button type="submit">Item opslaan</button>
-        </p>
-    </form>
+    </div>
 
     <script>
         const typeSelect = document.getElementById('type');
@@ -100,7 +110,7 @@
         }
 
         typeSelect.addEventListener('change', updateFormFields);
-        updateFormFields(); // Uitvoeren bij het laden
+        updateFormFields();
 
         // Client-side validatie
         form.addEventListener('submit', function(e) {

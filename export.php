@@ -1,5 +1,5 @@
 <?php
-// export.php
+// export.php (Controller)
 session_start();
 
 if (!isset($_SESSION['user'])) {
@@ -9,42 +9,25 @@ if (!isset($_SESSION['user'])) {
 
 require_once 'config/Database.php';
 require_once 'classes/ItemRepository.php';
+require_once 'classes/AvondlijstExport.php';
 
 $db = Database::getConnection();
 $itemRepo = new ItemRepository($db);
+$exporter = new AvondlijstExporter('avondlijst.xsd', 'avondlijst.xslt');
 
-// 1. Live XML genereren uit de MySQL-database
+// 1. Data ophalen en wegschrijven via models
 $xmlString = $itemRepo->exportToXml();
-
-// Schrijf weg naar bestand zodat je fysieke bestand altijd up-to-date is
 file_put_contents('avondlijst.xml', $xmlString);
 
-// 2. DOMDocument laden vanuit de gegenereerde XML-string
-$xml = new DOMDocument();
-$xml->loadXML($xmlString);
+// 2. Valideren via exporter-model
+$xsdErrors = $exporter->validateXml($xmlString);
 
-// 3. Valideren tegen het XSD-schema
-$xsdFile = 'avondlijst.xsd';
-libxml_use_internal_errors(true);
-
-if (!$xml->schemaValidate($xsdFile)) {
-    echo "<h2>XSD Validatiefouten:</h2><ul>";
-    foreach (libxml_get_errors() as $error) {
-        echo "<li>" . htmlspecialchars($error->message) . " (regel {$error->line})</li>";
-    }
-    echo "</ul>";
-    libxml_clear_errors();
+if (!empty($xsdErrors)) {
+    // Laad de fouten-view in plaats van ruwe echo's
+    require_once 'views/export_error_view.php';
     exit;
 }
 
-// 4. XSLT inladen en transformeren
-$xsl = new DOMDocument();
-if (!$xsl->load('avondlijst.xslt')) {
-    die("Fout bij het inladen van avondlijst.xslt.");
-}
-
-$proc = new XSLTProcessor();
-$proc->importStyleSheet($xsl);
-
-// 5. HTML tonen in de browser
-echo $proc->transformToXML($xml);
+// 3. Transformeren naar HTML en tonen via view
+$renderedHtml = $exporter->transformToHtml($xmlString);
+require_once 'views/export_view.php';

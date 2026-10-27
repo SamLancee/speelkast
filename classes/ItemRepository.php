@@ -85,9 +85,12 @@ class ItemRepository {
             ]);
         }
     }
+    /**
+     * Genereert een dynamische XML-structuur via de KastItem-objecten (OOP).
+     */
     public function exportToXml(): string {
-        $stmt = $this->db->query("SELECT * FROM items ORDER BY id ASC");
-        $items = $stmt->fetchAll();
+        // 1. Haal alle items op als echte objecten (Bordspel / Uitbreiding)
+        $items = $this->getAll(); 
 
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
@@ -95,43 +98,99 @@ class ItemRepository {
         $root = $dom->createElement('speelkast');
         $dom->appendChild($root);
 
+        // 2. Itereer over de objecten en roep hun eigen methodes aan
         foreach ($items as $item) {
-            $itemElem = $dom->createElement('item');
-            $itemElem->setAttribute('type', $item['type']);
-
-            // Type-specifieke attributen toevoegen (alleen als ze niet NULL of leeg zijn)
-            if (!empty($item['speelduur'])) {
-                $itemElem->setAttribute('speelduur', (string)$item['speelduur']);
-            }
-            if (!empty($item['min_spelers']) && !empty($item['max_spelers'])) {
-                $itemElem->setAttribute('spelers', $item['min_spelers'] . '-' . $item['max_spelers']);
-            }
-            if (!empty($item['moeilijkheidsgraad'])) {
-                $itemElem->setAttribute('moeilijkheidsgraad', $item['moeilijkheidsgraad']);
-            }
-
-            // Kind-elementen
-            $titelElem = $dom->createElement('titel');
-            $titelElem->textContent = $item['titel'];
-            $itemElem->appendChild($titelElem);
-
-            if ($item['type'] === 'uitbreiding' && !empty($item['basisspel'])) {
-                $basisElem = $dom->createElement('basisspel');
-                $basisElem->textContent = $item['basisspel'];
-                $itemElem->appendChild($basisElem);
-            }
-
-            $fotoElem = $dom->createElement('foto');
-            $fotoElem->textContent = $item['foto'];
-            $itemElem->appendChild($fotoElem);
-
-            $eigenaarElem = $dom->createElement('eigenaar');
-            $eigenaarElem->textContent = $item['eigenaar'];
-            $itemElem->appendChild($eigenaarElem);
-
-            $root->appendChild($itemElem);
+            /** @var KastItem $item */
+            $itemNode = $item->toXmlNode($dom);
+            $root->appendChild($itemNode);
         }
 
         return $dom->saveXML();
+    
+    }
+    
+    public function createFromInput(array $postData, array $fileData, string $eigenaar): array {
+        $errors = [];
+
+        $type = $postData['type'] ?? 'bordspel';
+        $titel = trim($postData['titel'] ?? '');
+        $minSpelers = trim($postData['min_spelers'] ?? '');
+        $maxSpelers = trim($postData['max_spelers'] ?? '');
+        $speelduur = trim($postData['speelduur'] ?? '');
+        $moeilijkheidsgraad = trim($postData['moeilijkheidsgraad'] ?? '');
+        $basisspel = trim($postData['basisspel'] ?? '');
+
+        // 1. Algemene validatie
+        if (empty($titel)) {
+            $errors[] = "Titel is verplicht.";
+        } elseif (!preg_match('/^[a-zA-Z0-9\s\-:\.\',!?]+$/u', $titel)) {
+            $errors[] = "Titel bevat ongeldige tekens.";
+        }
+
+        if (!in_array($type, ['bordspel', 'uitbreiding'], true)) {
+            $errors[] = "Ongeldig type geselecteerd.";
+        }
+
+        // 2. Type-specifieke validatie
+        if ($type === 'bordspel') {
+            if ($minSpelers !== '' && (!ctype_digit($minSpelers) || (int)$minSpelers < 1)) {
+                $errors[] = "Minimaal aantal spelers moet een positief getal zijn.";
+            }
+            if ($maxSpelers !== '' && (!ctype_digit($maxSpelers) || (int)$maxSpelers < 1)) {
+                $errors[] = "Maximaal aantal spelers moet een positief getal zijn.";
+            }
+            if ($minSpelers !== '' && $maxSpelers !== '' && (int)$minSpelers > (int)$maxSpelers) {
+                $errors[] = "Minimaal aantal spelers mag niet groter zijn dan maximaal aantal spelers.";
+            }
+            if ($speelduur !== '' && (!ctype_digit($speelduur) || (int)$speelduur < 1)) {
+                $errors[] = "Speelduur moet een positief aantal minuten zijn.";
+            }
+        } elseif ($type === 'uitbreiding') {
+            if (empty($basisspel)) {
+                $errors[] = "Bij een uitbreiding is het basisspel verplicht.";
+            }
+        }
+
+        // 3. Bestandscontrole
+        if (!isset($fileData['error']) || $fileData['error'] === UPLOAD_ERR_NO_FILE) {
+            $errors[] = "Selecteer een doosfoto om te uploaden.";
+        }
+
+        // Als er validatiefouten zijn, direct stoppen
+        if (!empty($errors)) {
+            return $errors;
+        }
+
+        // 4. Uitvoeren en opslaan
+        try {
+            $opslag = new BestandOpslag();
+            $fotoPad = $opslag->slaOp($fileData);
+
+            if ($type === 'bordspel') {
+                $item = new Bordspel(
+                    $titel,
+                    $eigenaar,
+                    $fotoPad,
+                    $minSpelers !== '' ? (int)$minSpelers : null,
+                    $maxSpelers !== '' ? (int)$maxSpelers : null,
+                    $speelduur !== '' ? (int)$speelduur : null,
+                    $moeilijkheidsgraad !== '' ? $moeilijkheidsgraad : null
+                );
+            } else {
+                $item = new Uitbreiding(
+                    $titel,
+                    $eigenaar,
+                    $fotoPad,
+                    $basisspel
+                );
+            }
+
+            $this->save($item);
+
+        } catch (Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
     }
 }
