@@ -51,22 +51,22 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="min_spelers">Min. spelers:</label>
-                            <input type="number" name="min_spelers" id="min_spelers" min="1" value="<?= htmlspecialchars($minSpelers) ?>">
+                            <input type="number" name="min_spelers" id="min_spelers" min="1" value="<?= htmlspecialchars($minSpelers) ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="max_spelers">Max. spelers:</label>
-                            <input type="number" name="max_spelers" id="max_spelers" min="1" value="<?= htmlspecialchars($maxSpelers) ?>">
+                            <input type="number" name="max_spelers" id="max_spelers" min="1" value="<?= htmlspecialchars($maxSpelers) ?>" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="speelduur">Speelduur (minuten):</label>
-                            <input type="number" name="speelduur" id="speelduur" min="1" value="<?= htmlspecialchars($speelduur) ?>">
+                            <input type="number" name="speelduur" id="speelduur" min="1" value="<?= htmlspecialchars($speelduur) ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="moeilijkheidsgraad">Moeilijkheidsgraad:</label>
-                            <select name="moeilijkheidsgraad" id="moeilijkheidsgraad">
+                            <select name="moeilijkheidsgraad" id="moeilijkheidsgraad" required>
                                 <option value="">-- Kies optie --</option>
                                 <option value="Eenvoudig" <?= $moeilijkheidsgraad === 'Eenvoudig' ? 'selected' : '' ?>>Eenvoudig</option>
                                 <option value="Gemiddeld" <?= $moeilijkheidsgraad === 'Gemiddeld' ? 'selected' : '' ?>>Gemiddeld</option>
